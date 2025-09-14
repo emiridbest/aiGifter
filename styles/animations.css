@@ -1,0 +1,39 @@
+/* Spinning Wheel Animation */
+@keyframes spin-wheel {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(1800deg); }
+}
+
+.spin-animation {
+  animation: spin-wheel 3s ease-out;
+}
+
+/* Gradient borders */
+.border-gradient {
+  background: linear-gradient(45deg, #8b5cf6, #ec4899);
+  border-radius: 50%;
+  padding: 4px;
+}
+
+.border-gradient-inner {
+  background: white;
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+}
+
+/* Pulse animation for mystery box */
+@keyframes mystery-pulse {
+  0%, 100% { 
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% { 
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+.mystery-pulse {
+  animation: mystery-pulse 2s infinite;
+}
