@@ -155,9 +155,7 @@ export class MysteryBoxFaucetService {
             return balance.toString();
         } catch (error) {
             console.error('Error getting faucet balance:', error);
-            return 'Error: Could not retrieve faucet balance. Please try asking again later
-            .';
-
+            return 'Error: Could not retrieve faucet balance. Please try asking again later.';
         }
     }
     
