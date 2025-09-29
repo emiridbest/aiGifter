@@ -59,7 +59,7 @@ export default async function RootLayout({
             <Header />
             {children}
             <Toaster />
-            <Footer />
+          {/*  <Footer /> */}
           </Providers>
         </ThemeProvider>
       </body>
