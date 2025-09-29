@@ -28,15 +28,12 @@ import { toast } from "sonner";
 
 export default function Header() {
   // Token addresses
-  const USDC_ADDRESS = "0xcebA9300f2b948710d2653dD7B07f33A8B32118C";
-  const CUSD_ADDRESS = "0x765DE816845861e75A25fCA122bb6898B8B1282a";
-  const USDT_ADDRESS = "0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e";
+  const USDC_ADDRESS = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
+
   
   // State
   const [usdcBalance, setUsdcBalance] = useState<number>(0);
-  const [cusdBalance, setCusdBalance] = useState<number>(0);
-  const [usdtBalance, setUsdtBalance] = useState<number>(0);
-  const [celoBalance, setCeloBalance] = useState<number>(0);
+  const [baseBalance, setbaseBalance] = useState<number>(0);
   const [isOpen, setIsOpen] = useState(false);
   
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -46,8 +43,8 @@ export default function Header() {
   const { isConnected, address } = useAccount();
   const { connect, connectors } = useConnect();
   const { disconnect } = useDisconnect();
-  const celoChainId = config.chains[0].id;
-  const publicClient = usePublicClient({ chainId: celoChainId });
+  const baseChainId = config.chains[0].id;
+  const publicClient = usePublicClient({ chainId: baseChainId });
   const {
     switchChain,
     error: switchChainError,
@@ -58,15 +55,6 @@ export default function Header() {
   const chainId = useChainId();
 
 
-  // Contract read hooks
-  const cusdResult = useReadContract({
-    abi: stableTokenABI,
-    address: CUSD_ADDRESS,
-    functionName: "balanceOf",
-    args: [address ?? "0x"],
-    query: { enabled: !!address && isConnected }
-  });
-
   const usdcResult = useReadContract({
     abi: stableTokenABI,
     address: USDC_ADDRESS,
@@ -74,37 +62,28 @@ export default function Header() {
     args: [address ?? "0x"],
     query: { enabled: !!address && isConnected }
   });
-
-  const usdtResult = useReadContract({
-    abi: stableTokenABI,
-    address: USDT_ADDRESS,
-    functionName: "balanceOf",
-    args: [address ?? "0x"],
-    query: { enabled: !!address && isConnected }
-  });
-
  
 
   const handleSwitchChain = useCallback(() => {
-    switchChain({ chainId: celoChainId });
-  }, [switchChain, celoChainId]);
+    switchChain({ chainId: baseChainId });
+  }, [switchChain, baseChainId]);
   // Auto-connect and network switching for Farcaster
   useEffect(() => {
-    const switchToCelo = async () => {
-      if (!isConnected || isConnected && chainId !== celoChainId) {
+    const switchTobase = async () => {
+      if (!isConnected || isConnected && chainId !== baseChainId) {
         try {
-          toast.info("Switching to Celo network...");
+          toast.info("Switching to base network...");
           handleSwitchChain();
           await new Promise(resolve => setTimeout(resolve, 3000));
-          if (chainId == celoChainId) {
+          if (chainId == baseChainId) {
             const connector = connectors.find((c) => c.id === "miniAppConnector") || connectors[0];
             connect({
               connector,
-              chainId: celoChainId,
+              chainId: baseChainId,
             });
-            toast.success("Connected to Celo network successfully!");
+            toast.success("Connected to base network successfully!");
           } else {
-            throw new Error("Failed to switch to Celo network");
+            throw new Error("Failed to switch to base network");
           }
         } catch (error) {
           console.error("Connection error:", error);
@@ -112,44 +91,33 @@ export default function Header() {
       }
     };
 
-    switchToCelo();
-  }, [connect, connectors, chainId, celoChainId, handleSwitchChain, isConnected]);
+    switchTobase();
+  }, [connect, connectors, chainId, baseChainId, handleSwitchChain, isConnected]);
 
 
   // Fetch balances
   useEffect(() => {
-    if (isConnected && address ) {
-      const fetchCeloBalance = async () => {
+    if (isConnected && address && publicClient ) {
+      const fetchbaseBalance = async () => {
         try {
           const balance = await publicClient.getBalance({ address });
-          setCeloBalance(Number(balance));
+          setbaseBalance(Number(balance));
         } catch (error) {
-          console.error("Error fetching CELO balance:", error);
+          console.error("Error fetching base balance:", error);
         }
       };
-
-      // Update token balances from hook results
-      if (cusdResult.data) {
-        setCusdBalance(Number(cusdResult.data));
-      }
 
       if (usdcResult.data) {
         setUsdcBalance(Number(usdcResult.data));
       }
 
-      if (usdtResult.data) {
-        setUsdtBalance(Number(usdtResult.data));
-      }
-      
-      fetchCeloBalance();
+      fetchbaseBalance();
     }
   }, [
     isConnected,
     address,
     publicClient,
-    cusdResult.data,
     usdcResult.data,
-    usdtResult.data,
   ]);
 
   // Click outside handler for dropdown
@@ -222,13 +190,10 @@ export default function Header() {
                           </div>
                           <div className="space-y-2 text-sm">
                             <div className="flex justify-between">
-                              <span>CELO:</span>
-                              <span className="font-medium">{formatBalance(celoBalance)}</span>
+                              <span>base:</span>
+                              <span className="font-medium">{formatBalance(baseBalance)}</span>
                             </div>
-                            <div className="flex justify-between">
-                              <span>CUSD:</span>
-                              <span className="font-medium">{formatBalance(cusdBalance)}</span>
-                            </div>
+                            
                           </div>
                         </div>
                         
@@ -264,7 +229,7 @@ export default function Header() {
                 className="rounded-full bg-purple-900 font-medium"
                 onClick={() => {
                   const connector = connectors.find((c) => c.id === "miniAppConnector") || connectors[1];
-                  connect({ connector, chainId: celoChainId });
+                  connect({ connector, chainId: baseChainId });
                 }}
               >
                 Connect Wallet
