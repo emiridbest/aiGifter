@@ -2,8 +2,8 @@
   "frame": {
     "name": "AI Gifter",
     "version": "1",
-    "iconUrl": "https://basefaucet.vercel.app",
-    "homeUrl": "https://basefaucet.vercel.app",
+    "iconUrl": "https://aibasefaucet.vercel.app/",
+    "homeUrl": "https://aibasefaucet.vercel.app/",
     "buttonTitle": "Open Base Faucet",
     "splashImageUrl": "https://github.com/emiridbest/aiGifter/blob/main/public/baseFaucet.png",
     "splashBackgroundColor": "#3730a3",
@@ -11,12 +11,12 @@
     "subtitle": "Claim usdc from faucet",
     "description": "Claim free usdc from faucet daily",
     "primaryCategory": "utility",
-    "tagline": "Claim free tokends daily",
+    "tagline": "Claim free tokens daily",
     "ogTitle": "Claim Free tokens"
   },
   "accountAssociation": {
     "header": "eyJmaWQiOjg0OTM2MywidHlwZSI6ImF1dGgiLCJrZXkiOiIweGI4YzE5OEU4ZjU2MzA5NkM5RGYwMDY3ZTdFNjRBNERBOGMxMjlkNUEifQ",
-    "payload": "eyJkb21haW4iOiIifQ",
-    "signature": "dRGMEqxWfI+IQwbhHcZSrKukSmduv5V39FNrfWfqNnMkhG6Np7ZBZ695gkwOm3HPXTDslucxVF7fcTkmJcX1Xhw="
+    "payload": "eyJkb21haW4iOiJiYXNlZmF1Y2V0LnZlcmNlbC5hcHAifQ",
+    "signature": "U8+v2WrtNcWpSZ+FwaSq0c5C24LE/1+IrWy4Bmlc9WZwv08vTuLEZ7MSG0ZIQWs64pBOH3awbnSLIdieyMkF4hw="
   }
 }
