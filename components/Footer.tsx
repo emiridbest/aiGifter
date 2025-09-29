@@ -17,13 +17,13 @@ export default function Footer() {
 
   return (
     <>
-      <footer className="sm:hidden fixed bottom-0 w-full">
+      <footer className="sm:hidden absolute bottom-0 w-full">
         <div className="flex justify-around py-3 text">
           <button
             onClick={() => router.push('/')}
             className={cn(
               "flex flex-col items-center px-4 py-2 rounded-md transition-colors",
-              isActive('/') ? "text-purple-600" : "text-gray-500 hover:text-purple-500"
+              isActive('/') ? "text-blue-600" : "text-gray-500 hover:text-blue-500"
             )}
           >
             <HomeIcon className="h-6 w-6" />

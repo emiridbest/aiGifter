@@ -158,9 +158,9 @@ export default function HomePage() {
                     {messages.length === 0 && !error ? (
                         <div className="h-full flex flex-col items-center justify-center p-6 text-center">
                             <div className="w-16 h-16 rounded-full bg-primary dark:bg-primary flex items-center justify-center mb-6">
-                                <Sparkles className="h-8 w-8 text-blue dark:text-primary-400" />
+                                <Sparkles className="h-8 w-8 text-blue-500 dark:text-primary-400" />
                             </div>
-                            <h2 className="text-2xl font-bold mb-2 text-blue dark:text-white/90">Ready to spin the Mystery Box?</h2>
+                            <h2 className="text-2xl font-bold mb-2 text-blue-500 dark:text-white/90">Ready to spin the Mystery Box?</h2>
                             <p className="text-gray-500 dark:text-gray-400 max-w-md mb-8">
                                 Ask me to spin the wheel and claim your random celoUSD tokens, or learn about the Mystery Box faucet.
                             </p>
@@ -208,14 +208,14 @@ export default function HomePage() {
                                         </div>
                                     </div>
                                     {message.role !== "user" && i === messages.length - 1 && (
-                                        <div className="flex ml-12 mt-2 gap-2 text-blue dark:text-gray-400">
+                                        <div className="flex ml-12 mt-2 gap-2 text-blue-500 dark:text-gray-400">
                                             <Button 
                                                 variant="outline" 
                                                 size="sm" 
                                                 className="h-8 text-xs"
                                                 onClick={() => reload()}
                                             >
-                                                <RotateCcw className="h-3 w-3 mr-2 text-blue dark:text-gray-400" />
+                                                <RotateCcw className="h-3 w-3 mr-2 text-blue-500 dark:text-gray-400" />
                                                 Regenerate
                                             </Button>
                                         </div>
