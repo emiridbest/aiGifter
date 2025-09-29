@@ -1,43 +1,22 @@
 {
-    "accountAssociation": {
-        "header": "eyJmaWQiOjg0OTM2MywidHlwZSI6ImN1c3RvZHkiLCJrZXkiOiIweEVjM2IyM0U0NTQwNzY2RWVkMmI0MDZGRTk4MTg3YzhBN0U3MjViQmMifQ",
-        "payload": "eyJkb21haW4iOiJjZWxvbXlzdGVyeWJveC52ZXJjZWwuYXBwIn0",
-        "signature": "MHgxYzI1OGNiYWRmNGZjYTZiNzM0NTM4YmFhNjJiNjBkNzgyZGFhNmU2OGI1NGIwYzUzMWE4OThkOGQ3MGIzMDg5NjExNjNmMjViMDk2MjBlYjYzNTY5YTdmZmYzYmY2Njk0ZjBmY2UxMmE3ZTJhNDBhNzM1Mzc0NDBjNWJiZmZlNTFj"
-    },
-    "frame": {
-        "version": "next",
-        "name": "Mystery",
-        "iconUrl": "https://celomysterybox.vercel.app/mystery-box-og.png",
-        "homeUrl": "https://celomysterybox.vercel.app",
-        "splashImageUrl": "https://celomysterybox.vercel.app/mystery-box-og.png",
-        "splashBackgroundColor": "#f5f0ec",
-        "webhookUrl": "https://api.neynar.com/f/app/9b0eeef4-765a-467d-b78c-8a6590e4d99d/event",
-        "subtitle": "Win cUSD daily",
-        "description": "Win cUSD daily by opening the mystery box on Celo blockchain",
-        "primaryCategory": "social",
-        "tags": [
-            "crypto",
-            "claims",
-            "stablecoin",
-            "win",
-            "lottery"
-        ],
-        "heroImageUrl": "https://celomysterybox.vercel.app/api/og/data",
-        "tagline": "Win cUSD daily",
-        "shortDescription": "Open the mystery box and win cUSD daily",
-        "ogTitle": "Mystery Box",
-        "ogDescription": "Win cUSD daily by opening the mystery box on Celo blockchain",
-        "ogImageUrl": "https://celomysterybox.vercel.app/api/og/data",
-        "requiredChains": [
-            "eip155:42220"
-        ],
-        "requiredCapabilities": [
-            "wallet.getEthereumProvider",
-            "actions.composeCast",
-            "actions.addMiniApp",
-            "actions.openUrl",
-            "actions.close",
-            "actions.ready"
-        ]
-    }
+  "frame": {
+    "name": "AI Gifter",
+    "version": "1",
+    "iconUrl": "https://basefaucet.vercel.app",
+    "homeUrl": "https://basefaucet.vercel.app",
+    "buttonTitle": "Open Base Faucet",
+    "splashImageUrl": "https://github.com/emiridbest/aiGifter/blob/main/public/baseFaucet.png",
+    "splashBackgroundColor": "#3730a3",
+    "webhookUrl": "https://api.neynar.com/f/app/9b0eeef4-765a-467d-b78c-8a6590e4d99d/event",
+    "subtitle": "Claim usdc from faucet",
+    "description": "Claim free usdc from faucet daily",
+    "primaryCategory": "utility",
+    "tagline": "Claim free tokends daily",
+    "ogTitle": "Claim Free tokens"
+  },
+  "accountAssociation": {
+    "header": "eyJmaWQiOjg0OTM2MywidHlwZSI6ImF1dGgiLCJrZXkiOiIweGI4YzE5OEU4ZjU2MzA5NkM5RGYwMDY3ZTdFNjRBNERBOGMxMjlkNUEifQ",
+    "payload": "eyJkb21haW4iOiIifQ",
+    "signature": "dRGMEqxWfI+IQwbhHcZSrKukSmduv5V39FNrfWfqNnMkhG6Np7ZBZ695gkwOm3HPXTDslucxVF7fcTkmJcX1Xhw="
+  }
 }
