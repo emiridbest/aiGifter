@@ -3,6 +3,7 @@ import { getSession } from "../lib/auth";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import { ThemeProvider } from "../components/ThemeProvider";
+
 import "./globals.css";
 import { Metadata } from "next";
 import { Toaster } from "../components/ui/sonner";
@@ -12,7 +13,7 @@ const appUrl = process.env.NEXT_PUBLIC_URL
 export const metadata: Metadata = {
   title: 'AI Gifter',
   description: 'Claim free usdc from faucet daily',
-  metadataBase: new URL("https://basefaucet.vercel.app"),
+  metadataBase: new URL("https://aibasefaucet.vercel.app/"),
   openGraph: {
     images: [
       'https://github.com/emiridbest/aiGifter/blob/main/public/baseFaucet.png'
@@ -25,8 +26,8 @@ export const metadata: Metadata = {
     frame: JSON.stringify({
       name: "AI Gifter",
       version: "1",
-      iconUrl: "https://basefaucet.vercel.app",
-      homeUrl: "https://basefaucet.vercel.app",
+      iconUrl: "https://aibasefaucet.vercel.app/",
+      homeUrl: "https://aibasefaucet.vercel.app/",
       buttonTitle: "Open Base Faucet",
       splashImageUrl: "https://github.com/emiridbest/aiGifter/blob/main/public/baseFaucet.png",
       splashBackgroundColor: "#3730a3",
