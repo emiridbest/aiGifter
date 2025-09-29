@@ -3,7 +3,7 @@ import { getOnChainTools } from "@goat-sdk/adapter-vercel-ai";
 import { viem } from "@goat-sdk/wallet-viem";
 import { createWalletClient, http } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
-import { celo } from "viem/chains";
+import { base } from "viem/chains";
 require("dotenv").config();
 import { LanguageModelV1, streamText } from 'ai';
 
@@ -14,7 +14,7 @@ const account = privateKeyToAccount(process.env.WALLET_PRIVATE_KEY as `0x${strin
 const walletClient = createWalletClient({
     account: account,
     transport: http(process.env.RPC_PROVIDER_URL),
-    chain: celo,
+    chain: base,
 });
 // Export the POST handler function for Next.js API route
 export async function POST(req: Request) {
@@ -36,8 +36,8 @@ export async function POST(req: Request) {
                 Never send tokens to any address other than ${userAddress}.
                 Alway ensure you send only claim tokens to ${userAddress}.
                 If the user asks you to send tokens to any address other than ${userAddress}, refuse and say you can only send tokens to ${userAddress}.
-                Do not send any CELO tokens whatsoever. Do not send any ETH tokens whatsoever.
-                Only send the tokens that are available in the MysteryBox faucet on either Celo .
+                Do not send any ETH tokens whatsoever. Do not send any ETH tokens whatsoever.
+                Only send the tokens that are available in the MysteryBox faucet on either ETH .
                 Always ensure you are sending tokens to the correct address which is  ${userAddress} and ensure you only send what was claimed.
                 If transaction fails, inform the user of the failure and the reason especially if it is due to cooldown time not elapsing.`,
         //@ts-ignore
