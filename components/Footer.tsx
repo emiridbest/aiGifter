@@ -33,7 +33,7 @@ export default function Footer() {
       </footer>
       
       {/* Claims display that shows on all pages */}
-      <ClaimsFooter />
+    {/*  <ClaimsFooter /> */}
     </>
   );
 }
