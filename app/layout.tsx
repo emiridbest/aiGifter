@@ -39,9 +39,9 @@ export const metadata: Metadata = {
       ogTitle: "Claim Free tokens"
     }),
     accountAssociation: JSON.stringify({
-      header: "eyJmaWQiOjg0OTM2MywidHlwZSI6ImF1dGgiLCJrZXkiOiIweGI4YzE5OEU4ZjU2MzA5NkM5RGYwMDY3ZTdFNjRBNERBOGMxMjlkNUEifQ",
-      payload: "eyJkb21haW4iOiIifQ",
-      signature: "dRGMEqxWfI+IQwbhHcZSrKukSmduv5V39FNrfWfqNnMkhG6Np7ZBZ695gkwOm3HPXTDslucxVF7fcTkmJcX1Xhw="
+    "header": "eyJmaWQiOjg0OTM2MywidHlwZSI6ImF1dGgiLCJrZXkiOiIweGI4YzE5OEU4ZjU2MzA5NkM5RGYwMDY3ZTdFNjRBNERBOGMxMjlkNUEifQ",
+    "payload": "eyJkb21haW4iOiJhaWJhc2VmYXVjZXQudmVyY2VsLmFwcCJ9",
+    "signature": "sIYI84jo4Pa17p060MkV0R2Cpa0uh5MJGm6B8H5lTO85DlsPn6C4Hb/LLOKW96akFyT7Z4/0kEaQwcI+38OQ3Rs="
     })
   }
 }

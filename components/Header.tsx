@@ -157,7 +157,7 @@ export default function Header() {
           {/* Logo */}
           <div className="flex items-center">
            
-            <span className="ml-2 font-bold text-lg text-purple-600 font-serif" style={{ fontFamily: "'Playfair Display', serif" }}>Mystery Box</span>
+            <span className="ml-2 font-bold text-lg text-purple-600 font-serif" style={{ fontFamily: "'Playfair Display', serif" }}>AI BASE FAUCET</span>
           </div>
 
           {/* Connection Status & Controls */}
