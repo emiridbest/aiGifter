@@ -1,10 +1,9 @@
 // @ts-nocheck
-import { EVMWalletClient, serverWalletClient } from '../../lib/server-utils';
+import { EVMWalletClient } from '@goat-sdk/wallet-evm';
 import { Tool } from '@goat-sdk/core';
 import { z } from 'zod';
 import { EsusuParameters, EmptyParameters, UserAddressParameters } from './parameters';
-import { abi } from '../../utils/abi';
-import { contractAddress } from "../lib/utils";
+import { contractAddress, abi } from "../lib/utils";
 
 
 export class MysteryBoxFaucetService {
@@ -156,7 +155,7 @@ export class MysteryBoxFaucetService {
             return balance.toString();
         } catch (error) {
             console.error('Error getting faucet balance:', error);
-            throw new Error('Could not retrieve faucet balance');
+            return 'Error: Could not retrieve faucet balance. Please try asking again later.';
         }
     }
     

@@ -3,7 +3,7 @@ import { z } from 'zod';
 
 export const EmptyParameters = createToolParameters(z.object({}));
 
-const CUSD_TOKEN_ADDRESS = "0x765DE816845861e75A25fCA122bb6898B8B1282a"
+const CUSD_TOKEN_ADDRESS = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
 const addressSchema = z.string().regex(/^0x[a-fA-F0-9]{40}$/, 'Must be a valid address');
 
 export class EsusuParameters extends createToolParameters(
