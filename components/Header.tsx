@@ -151,13 +151,13 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full backdrop-blur-md bg-white/90 border-b border-purple-200  shadow-sm">
+    <header className="sticky top-0 z-40 w-full backdrop-blur-md bg-white/90 border-b border-blue-200  shadow-sm">
       <div className="container mx-auto px-4">
         <div className="h-16 flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
            
-            <span className="ml-2 font-bold text-lg text-purple-600 font-serif" style={{ fontFamily: "'Playfair Display', serif" }}>AI BASE FAUCET</span>
+            <span className="ml-2 font-bold text-lg text-blue-600 font-serif" style={{ fontFamily: "'Playfair Display', serif" }}>AI BASE FAUCET</span>
           </div>
 
           {/* Connection Status & Controls */}
@@ -170,22 +170,22 @@ export default function Header() {
                   <Sheet>
                     <SheetTrigger asChild>
                       <Button size="icon" variant="ghost">
-                        <Bars3Icon className="h-5 w-5 text-purple-700" />
+                        <Bars3Icon className="h-5 w-5 text-blue-700" />
                       </Button>
                     </SheetTrigger>
                     <SheetContent side="right" className="w-[300px]">
                       <div className="flex flex-col space-y-4 mt-8">
                         {/* Wallet Info */}
-                        <div className="bg-purple-800 rounded-lg p-4">
+                        <div className="bg-blue-800 rounded-lg p-4">
                           <div className="flex items-center space-x-3 mb-3">
-                            <div className="h-10 w-10 rounded-full bg-gradient-to-r from-white/70 to-purple-600 flex items-center justify-center">
+                            <div className="h-10 w-10 rounded-full bg-gradient-to-r from-white/70 to-blue-600 flex items-center justify-center">
                               <span className="text-white font-medium">
                                 {address ? address.substring(2, 4).toUpperCase() : ''}
                               </span>
                             </div>
                             <div>
                               <p className="font-medium text-sm">{formatAddress(address)}</p>
-                              <p className="text-xs text-purple-500">Connected</p>
+                              <p className="text-xs text-blue-500">Connected</p>
                             </div>
                           </div>
                           <div className="space-y-2 text-sm">
@@ -203,8 +203,8 @@ export default function Header() {
                           className={cn(
                             "py-3 px-4 rounded-lg transition-all duration-300 text-center",
                             pathname === "/"
-                              ? "bg-purple text-white"
-                              : "hover:bg-purple-100 bg-purple-800"
+                              ? "bg-blue text-white"
+                              : "hover:bg-blue-100 bg-blue-800"
                           )}
                         >
                           Home
@@ -226,7 +226,7 @@ export default function Header() {
               </>
             ) : (
               <Button
-                className="rounded-full bg-purple-900 font-medium"
+                className="rounded-full bg-blue-900 font-medium"
                 onClick={() => {
                   const connector = connectors.find((c) => c.id === "miniAppConnector") || connectors[1];
                   connect({ connector, chainId: baseChainId });
