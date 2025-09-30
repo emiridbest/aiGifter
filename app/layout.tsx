@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://aibasefaucet.vercel.app/"),
   openGraph: {
     images: [
-      'https://github.com/emiridbest/aiGifter/blob/main/public/baseFaucet.png'
+      'https://aibasefaucet.vercel.app/baseFaucet.png'
     ],
     title: 'Claim Free tokens',
     description: 'Claim free usdc from faucet daily',
@@ -29,13 +29,13 @@ export const metadata: Metadata = {
       iconUrl: "https://aibasefaucet.vercel.app/",
       homeUrl: "https://aibasefaucet.vercel.app/",
       buttonTitle: "Open Base Faucet",
-      splashImageUrl: "https://github.com/emiridbest/aiGifter/blob/main/public/baseFaucet.png",
+      splashImageUrl: "https://aibasefaucet.vercel.app/baseFaucet.png",
       splashBackgroundColor: "#3730a3",
       webhookUrl: "https://api.neynar.com/f/app/9b0eeef4-765a-467d-b78c-8a6590e4d99d/event",
       subtitle: "Claim usdc from faucet",
       description: "Claim free usdc from faucet daily",
       primaryCategory: "utility",
-      tagline: "Claim free tokends daily",
+      tagline: "Claim free tokens daily",
       ogTitle: "Claim Free tokens"
     }),
     accountAssociation: JSON.stringify({
