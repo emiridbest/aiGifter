@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { EVMWalletClient } from '@goat-sdk/wallet-evm';
+import { EVMWalletClient, EVMReadRequest } from '@goat-sdk/wallet-evm';
 import { Tool } from '@goat-sdk/core';
 import { z } from 'zod';
 import { EsusuParameters, EmptyParameters, UserAddressParameters } from './parameters';
@@ -11,42 +11,8 @@ export class MysteryBoxFaucetService {
     private readonly contractAddress: string = contractAddress;
     private readonly abi = abi;
     private client: EVMWalletClient;
+    private clientRead: EVMReadRequest;
 
-    
-    // @ts-ignore
-    @Tool({
-        name: 'claimTokens',
-        description: 'Claim tokens from the MysteryBox faucet with random percentage (1-20%)'
-    })
-    public async claimTokens(
-        // @ts-ignore
-        params: EsusuParameters
-    ) {
-        try {
-            const percentage = params.amount || Math.floor(Math.random() * 20) + 1; // Use provided amount or random
-            const tx = await this.client.writeContract({
-                address: this.contractAddress,
-                abi: this.abi,
-                functionName: 'claimTokens',
-                args: [percentage]
-            });
-
-            const receipt = await this.client.publicClient.waitForTransactionReceipt({ hash: tx });
-
-            if (receipt.status === 'success') {
-                return `Successfully claimed ${percentage}% of the faucet balance. Transaction hash: ${tx}`;
-            } else {
-                return `Claim transaction failed. Transaction hash: ${tx}`;
-            }
-        } catch (error: any) {
-            console.error('Error claiming tokens:', error.message);
-            if (error.message.includes('Wait for cooldown')) {
-                const cooldownTime = await this.getClaimCooldown({ userAddress: this.client.account.address });
-                return `You cannot claim yet. ${cooldownTime}`;
-            }
-            return 'Failed to claim tokens. The account may not be authorized or another error occurred.';
-        }
-    }
 
     /**
      * Claims a random percentage of the MysteryBox faucet balance for a specified user.
@@ -60,35 +26,51 @@ export class MysteryBoxFaucetService {
         parameters: EsusuParameters,
     })
     public async claimForUser(
+        walletClient: EVMWalletClient,
         // @ts-ignore
         params: EsusuParameters
     ) {
         if (!params.recipient) {
             return 'A recipient address must be provided to claim for a user.';
         }
+        if (!walletClient) {
+            return 'Error: Wallet client is not initialized. Please ensure the plugin is configured.';
+        }
+
         try {
             const percentage = params.amount || Math.floor(Math.random() * 20) + 1;
-            const tx = await this.client.writeContract({
-                address: this.contractAddress,
+
+            // Use the provided walletClient to send the transaction
+            const tx = await walletClient.sendTransaction({
+                to: this.contractAddress,
                 abi: this.abi,
                 functionName: 'claimForUser',
                 args: [params.recipient, percentage]
             });
 
-            const receipt = await this.client.publicClient.waitForTransactionReceipt({ hash: tx });
-
-            if (receipt.status === 'success') {
-                return `Successfully initiated claim for ${percentage}% of the faucet balance for user ${params.recipient}. Transaction hash: ${tx}`;
-            } else {
-                return `Claim transaction for ${params.recipient} failed. Transaction hash: ${tx}`;
+            // Wait for receipt if publicClient is available
+            if (walletClient.publicClient && typeof walletClient.publicClient.waitForTransactionReceipt === 'function') {
+                try {
+                    const receipt = await walletClient.publicClient.waitForTransactionReceipt({ hash: tx });
+                    if ((receipt as any).status === 'success' || (receipt as any).status === 1) {
+                        return `Successfully initiated claim for ${percentage}% of the faucet balance for user ${params.recipient}. Transaction hash: ${tx}`;
+                    }
+                    return `Claim transaction for ${params.recipient} may have failed. Transaction hash: ${tx}`;
+                } catch (receiptErr) {
+                    // If waiting fails, still return tx hash so user can check manually
+                    console.error('Error waiting for receipt:', receiptErr);
+                    return `Transaction sent for ${params.recipient} (tx: ${tx}). Waiting for confirmation failed; please check the transaction status on the explorer.`;
+                }
             }
+
+            return `Transaction sent for ${params.recipient}. Transaction hash: ${tx}`;
         } catch (error: any) {
-            console.error('Error claiming tokens for user:', error.message);
-            if (error.message.includes('Wait for cooldown')) {
-                const cooldownTime = await this.getClaimCooldown({ userAddress: params.recipient });
+            console.error('Error claiming tokens for user:', error?.message ?? error);
+            if (String(error?.message || '').includes('Wait for cooldown')) {
+                const cooldownTime = await this.getTimeUntilNextClaim(walletClient, { userAddress: params.recipient });
                 return `The user ${params.recipient} cannot claim yet. ${cooldownTime}`;
             }
-            return `Failed to claim tokens for ${params.recipient}. The account may not be authorized or another error occurred.`;
+            return `Failed to claim tokens for ${params.recipient}. ${error?.message ?? 'Unknown error.'}`;
         }
     }
 
@@ -104,14 +86,22 @@ export class MysteryBoxFaucetService {
         if (!parameters.amount) {
             throw new Error('Amount is required');
         }
-        
-        const tx = await walletClient.sendTransaction({
-            to: this.contractAddress,
-            abi: this.abi,
-            functionName: 'fundFaucet',
-            args: [parameters.amount]
-        });
-        return tx.hash;
+        if (!walletClient) {
+            return 'Error: Wallet client is not available for funding.';
+        }
+
+        try {
+            const tx = await walletClient.sendTransaction({
+                to: this.contractAddress,
+                abi: this.abi,
+                functionName: 'fundFaucet',
+                args: [parameters.amount]
+            });
+            return tx.hash;
+        } catch (err: any) {
+            console.error('Error funding faucet:', err?.message ?? err);
+            return `Failed to fund faucet: ${err?.message ?? 'Unknown error'}`;
+        }
     }
     
     // @ts-ignore
@@ -126,14 +116,22 @@ export class MysteryBoxFaucetService {
         if (!parameters.amount) {
             throw new Error('Amount is required');
         }
-        
-        const tx = await walletClient.sendTransaction({
-            to: this.contractAddress,
-            abi: this.abi,
-            functionName: 'emergencyWithdraw',
-            args: [parameters.amount]
-        });
-        return tx.hash;
+        if (!walletClient) {
+            return 'Error: Wallet client is not available for emergency withdraw.';
+        }
+
+        try {
+            const tx = await walletClient.sendTransaction({
+                to: this.contractAddress,
+                abi: this.abi,
+                functionName: 'emergencyWithdraw',
+                args: [parameters.amount]
+            });
+            return tx.hash;
+        } catch (err: any) {
+            console.error('Error during emergency withdraw:', err?.message ?? err);
+            return `Emergency withdraw failed: ${err?.message ?? 'Unknown error'}`;
+        }
     }
     
     // @ts-ignore
@@ -142,78 +140,60 @@ export class MysteryBoxFaucetService {
         description: 'Get the current balance of the MysteryBox faucet'
     })
     async getFaucetBalance(
-        walletClient: EVMWalletClient,
+        walletClient: EVMReadRequest,
         parameters: EmptyParameters
-    ): Promise<string> {
+    ): Promise<any> {
         try {
+            if (!walletClient) {
+                return 'Error: Wallet client is not available for funding.';
+            }
+
+            // Prefer read if available
             const balance = await walletClient.read({
                 address: this.contractAddress,
                 abi: this.abi,
                 functionName: 'getFaucetBalance',
-                args: []
             });
-            return balance.toString();
-        } catch (error) {
-            console.error('Error getting faucet balance:', error);
-            return 'Error: Could not retrieve faucet balance. Please try asking again later.';
+            return String(balance);
+
+        } catch (error: any) {
+            console.error('Error getting faucet balance:', error?.message ?? error);
+            return `Error: Could not retrieve faucet balance. ${error?.message ?? ''}`;
         }
     }
     
+
     // @ts-ignore
     @Tool({
-        name: 'getClaimCooldown',
-        description: 'Get the remaining claim cooldown time for a specific user'
+        name: 'getTimeUntilNextClaim',
+        description: 'Get the time until the next claim for a specific user'
     })
-    public async getClaimCooldown(
+    public async getTimeUntilNextClaim(
+        walletClient: EVMReadRequest,
         // @ts-ignore
-        params: UserAddressParameters
-    ) {
-        try {
-            const remainingTime = await this.client.readContract({
-                address: this.contractAddress,
-                abi: this.abi,
-                functionName: 'getRemainingCooldown',
-                args: [params.userAddress]
-            });
-
-            if (Number(remainingTime) === 0) {
-                return 'You can claim tokens now!';
-            }
-
-            return `You need to wait ${remainingTime} seconds before you can claim again.`;
-        } catch (error) {
-            console.error('Error getting claim cooldown:', error);
-            return 'Failed to get claim cooldown time.';
+        params: EsusuParameters
+    ): Promise<any> {
+        if (!walletClient) {
+            return 'Error: Wallet client is not initialized. Please contact support.';
         }
-    }
-    
-    // @ts-ignore
-    @Tool({
-        name: 'getLastClaimTime',
-        description: 'Get the last time a specific user claimed tokens from the faucet'
-    })
-    public async getLastClaimTime(
-        // @ts-ignore
-        params: UserAddressParameters
-    ) {
         try {
-            const lastClaimTime = await this.client.readContract({
+            const nextClaimTime = await walletClient.read({
                 address: this.contractAddress,
                 abi: this.abi,
-                functionName: 'lastReceiveTime',
-                args: [params.userAddress]
+                functionName: 'getTimeUntilNextClaim',
+                args: [params.recipient]
             });
 
-            const lastClaimDate = new Date(Number(lastClaimTime) * 1000);
+            const nextClaimDate = new Date(Number(nextClaimTime) * 1000);
 
-            if (Number(lastClaimTime) === 0) {
+            if (Number(nextClaimTime) === 0) {
                 return 'This user has not claimed any tokens yet.';
             }
 
-            return `The user last claimed tokens on: ${lastClaimDate.toLocaleString()}.`;
+            return `The user next claimed tokens on: ${nextClaimDate.toLocaleString()}.`;
         } catch (error) {
-            console.error('Error getting last claim time:', error);
-            return 'Failed to get the last claim time.';
+            console.error('Error getting next claim time:', error);
+            return 'Failed to get the next claim time.';
         }
     }
 }
