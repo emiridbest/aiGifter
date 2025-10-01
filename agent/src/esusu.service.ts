@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { EVMWalletClient, EVMReadRequest } from '@goat-sdk/wallet-evm';
+import { EVMWalletClient } from '@goat-sdk/wallet-evm';
 import { Tool } from '@goat-sdk/core';
 import { z } from 'zod';
 import { EsusuParameters, EmptyParameters, UserAddressParameters } from './parameters';
@@ -11,7 +11,6 @@ export class MysteryBoxFaucetService {
     private readonly contractAddress: string = contractAddress;
     private readonly abi = abi;
     private client: EVMWalletClient;
-    private clientRead: EVMReadRequest;
 
 
     /**
@@ -80,7 +79,7 @@ export class MysteryBoxFaucetService {
         description: 'Fund the MysteryBox faucet with tokens'
     })
     async fundFaucet(
-        walletClient: EVMWalletClient, 
+        walletClient: EVMWalletClient,
         parameters: EsusuParameters
     ): Promise<string> {
         if (!parameters.amount) {
@@ -103,14 +102,14 @@ export class MysteryBoxFaucetService {
             return `Failed to fund faucet: ${err?.message ?? 'Unknown error'}`;
         }
     }
-    
+
     // @ts-ignore
     @Tool({
         name: 'emergencyWithdraw',
         description: 'Emergency withdraw tokens from the faucet (owner only)'
     })
     async emergencyWithdraw(
-        walletClient: EVMWalletClient, 
+        walletClient: EVMWalletClient,
         parameters: EsusuParameters
     ): Promise<string> {
         if (!parameters.amount) {
@@ -133,24 +132,29 @@ export class MysteryBoxFaucetService {
             return `Emergency withdraw failed: ${err?.message ?? 'Unknown error'}`;
         }
     }
-    
+
     // @ts-ignore
     @Tool({
         name: 'getFaucetBalance',
         description: 'Get the current balance of the MysteryBox faucet'
     })
     async getFaucetBalance(
-        walletClient: EVMReadRequest,
-        parameters: EmptyParameters
-    ): Promise<any> {
+        walletClient: EVMWalletClient,
+        // @ts-ignore
+        params: EmptyParameters
+    ): Promise<string> {
         try {
-            if (!walletClient) {
-                return 'Error: Wallet client is not available for funding.';
-            }
+        if (!params.recipient) {
+            return 'A recipient address must be provided to claim for a user.';
+        }
+        if (!walletClient) {
+            return 'Error: Wallet client is not initialized. Please ensure the plugin is configured.';
+        }
+
 
             // Prefer read if available
-            const balance = await walletClient.read({
-                address: this.contractAddress,
+            const balance = await walletClient.sendTransaction({
+                to: this.contractAddress,
                 abi: this.abi,
                 functionName: 'getFaucetBalance',
             });
@@ -161,7 +165,7 @@ export class MysteryBoxFaucetService {
             return `Error: Could not retrieve faucet balance. ${error?.message ?? ''}`;
         }
     }
-    
+
 
     // @ts-ignore
     @Tool({
@@ -169,19 +173,22 @@ export class MysteryBoxFaucetService {
         description: 'Get the time until the next claim for a specific user'
     })
     public async getTimeUntilNextClaim(
-        walletClient: EVMReadRequest,
+        walletClient: EVMWalletClient,
         // @ts-ignore
-        params: EsusuParameters
-    ): Promise<any> {
+        params: UserAddressParameters
+    ): Promise<string> {
+        if (!params.recipient) {
+            return 'A recipient address must be provided to claim for a user.';
+        }
         if (!walletClient) {
-            return 'Error: Wallet client is not initialized. Please contact support.';
+            return 'Error: Wallet client is not initialized. Please ensure the plugin is configured.';
         }
         try {
-            const nextClaimTime = await walletClient.read({
-                address: this.contractAddress,
+            const nextClaimTime = await walletClient.sendTransaction({
+                to: this.contractAddress,
                 abi: this.abi,
                 functionName: 'getTimeUntilNextClaim',
-                args: [params.recipient]
+                args: [params.userAddress]
             });
 
             const nextClaimDate = new Date(Number(nextClaimTime) * 1000);
