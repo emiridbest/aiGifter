@@ -2,7 +2,7 @@
   "frame": {
     "name": "AI Gifter",
     "version": "1",
-    "iconUrl": "https://aibasefaucet.vercel.app/",
+    "iconUrl": "https://aibasefaucet.vercel.app/baseFaucet.png",
     "homeUrl": "https://aibasefaucet.vercel.app/",
     "buttonTitle": "Open Base Faucet",
     "splashImageUrl": "https://aibasefaucet.vercel.app/baseFaucet.png",
