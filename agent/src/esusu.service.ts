@@ -50,19 +50,19 @@ export class MysteryBoxFaucetService {
             // Wait for receipt if publicClient is available
             if (walletClient.publicClient && typeof walletClient.publicClient.waitForTransactionReceipt === 'function') {
                 try {
-                    const receipt = await walletClient.publicClient.waitForTransactionReceipt({ hash: tx });
+                    const receipt = await walletClient.publicClient.waitForTransactionReceipt({ hash: tx.hash });
                     if ((receipt as any).status === 'success' || (receipt as any).status === 1) {
-                        return `Successfully initiated claim for ${percentage}% of the faucet balance for user ${params.recipient}. Transaction hash: ${tx}`;
+                        return `Successfully initiated claim for ${percentage}% of the faucet balance for user ${params.recipient}. Transaction hash: ${tx.hash}`;
                     }
-                    return `Claim transaction for ${params.recipient} may have failed. Transaction hash: ${tx}`;
+                    return `Claim transaction for ${params.recipient} may have failed. Transaction hash: ${tx.hash}`;
                 } catch (receiptErr) {
                     // If waiting fails, still return tx hash so user can check manually
                     console.error('Error waiting for receipt:', receiptErr);
-                    return `Transaction sent for ${params.recipient} (tx: ${tx}). Waiting for confirmation failed; please check the transaction status on the explorer.`;
+                    return `Transaction sent for ${params.recipient} (tx: ${tx.hash}). Waiting for confirmation failed; please check the transaction status on the explorer.`;
                 }
             }
 
-            return `Transaction sent for ${params.recipient}. Transaction hash: ${tx}`;
+            return `Transaction sent for ${params.recipient}. Transaction hash: ${tx.hash}`;
         } catch (error: any) {
             console.error('Error claiming tokens for user:', error?.message ?? error);
             if (String(error?.message || '').includes('Wait for cooldown')) {
@@ -142,23 +142,21 @@ export class MysteryBoxFaucetService {
         walletClient: EVMWalletClient,
         // @ts-ignore
         params: EmptyParameters
-    ): Promise<string> {
+    ): Promise<EVMReadResult> {
         try {
-        if (!params.recipient) {
-            return 'A recipient address must be provided to claim for a user.';
-        }
-        if (!walletClient) {
-            return 'Error: Wallet client is not initialized. Please ensure the plugin is configured.';
-        }
-
+            if (!walletClient) {
+                return 'Error: Wallet client is not initialized. Please ensure the plugin is configured.';
+            }
 
             // Prefer read if available
-            const balance = await walletClient.sendTransaction({
-                to: this.contractAddress,
+            const balance = await walletClient.read({
+                address: this.contractAddress,
                 abi: this.abi,
                 functionName: 'getFaucetBalance',
+                args: []
             });
-            return String(balance);
+
+            return ` The faucet balance is: ${String(balance.value)}`;
 
         } catch (error: any) {
             console.error('Error getting faucet balance:', error?.message ?? error);
@@ -176,28 +174,62 @@ export class MysteryBoxFaucetService {
         walletClient: EVMWalletClient,
         // @ts-ignore
         params: UserAddressParameters
-    ): Promise<string> {
-        if (!params.recipient) {
+    ): Promise<EVMReadResult> {
+        if (!params.userAddress) {
             return 'A recipient address must be provided to claim for a user.';
         }
         if (!walletClient) {
             return 'Error: Wallet client is not initialized. Please ensure the plugin is configured.';
         }
         try {
-            const nextClaimTime = await walletClient.sendTransaction({
-                to: this.contractAddress,
+            const raw = await walletClient.read({
+                address: this.contractAddress,
                 abi: this.abi,
                 functionName: 'getTimeUntilNextClaim',
                 args: [params.userAddress]
             });
 
-            const nextClaimDate = new Date(Number(nextClaimTime) * 1000);
+            // raw can be a BigInt, an object with .value, or undefined. Normalize it.
+            let seconds: number | null = null;
 
-            if (Number(nextClaimTime) === 0) {
+            if (raw === undefined || raw === null) {
+                console.warn('getTimeUntilNextClaim returned undefined/null for', params.userAddress);
+                seconds = null;
+            } else if (typeof raw === 'bigint') {
+                seconds = Number(raw);
+            } else if (typeof raw === 'number') {
+                seconds = raw;
+            } else if (typeof raw === 'string' && /^[0-9]+$/.test(raw)) {
+                seconds = Number(raw);
+            } else if (typeof (raw as any).value !== 'undefined') {
+                const v = (raw as any).value;
+                if (typeof v === 'bigint') seconds = Number(v);
+                else if (typeof v === 'string' && /^[0-9]+$/.test(v)) seconds = Number(v);
+                else if (typeof v === 'number') seconds = v;
+            }
+
+            if (seconds === null) {
+                return 'Could not determine next claim time for this user.';
+            }
+
+            if (seconds === 0) {
                 return 'This user has not claimed any tokens yet.';
             }
 
-            return `The user next claimed tokens on: ${nextClaimDate.toLocaleString()}.`;
+            // seconds likely represents a unix timestamp delta or epoch. Heuristic: if it's large (>1e9) treat as epoch seconds
+            const isEpoch = seconds > 1e9;
+            if (isEpoch) {
+                const date = new Date(seconds * 1000);
+                return `Next claim time (UTC): ${date.toUTCString()}`;
+            }
+
+            // otherwise treat as duration (seconds until next claim)
+            let remaining = seconds;
+            const hrs = Math.floor(remaining / 3600);
+            remaining %= 3600;
+            const mins = Math.floor(remaining / 60);
+            const secs = remaining % 60;
+            return `Time until next claim: ${hrs}h ${mins}m ${secs}s`;
         } catch (error) {
             console.error('Error getting next claim time:', error);
             return 'Failed to get the next claim time.';
