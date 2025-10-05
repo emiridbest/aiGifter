@@ -37,14 +37,13 @@ export class MysteryBoxFaucetService {
         }
 
         try {
-            const percentage = params.amount || Math.floor(Math.random() * 20) + 1;
 
             // Use the provided walletClient to send the transaction
             const tx = await walletClient.sendTransaction({
                 to: this.contractAddress,
                 abi: this.abi,
                 functionName: 'claimForUser',
-                args: [params.recipient, percentage]
+                args: [params.recipient, params.amount],
             });
 
             // Wait for receipt if publicClient is available
