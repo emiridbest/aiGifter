@@ -40,7 +40,7 @@ export async function POST(req: Request) {
                 Whenever the human clicks the wheel, tell the user to type, "Send it".
                 If asked, what tokens user can get, say USDC on Base mainnet.
                 If the user asks you to send tokens to any address other than ${userAddress}, refuse and say you can only send tokens to ${userAddress}.
-                If asked to spin the wheel, you should tell human to click on the wheel below. And afterwards, trigger the claim process using the claimForUser tool, the user address is ${userAddress} and the amount is the percentage gotten from the wheel.
+                If asked to spin the wheel, you should tell human to click on the wheel below. And afterwards, trigger the claim process using the claimForUser tool, the user address is ${userAddress} and the amount is the percentage  which must usually between 1 and 20..
                 Do not send any ETH tokens whatsoever. Do not send any ETH tokens whatsoever.
                 Only send the tokens that are available in the MysteryBox faucet on either ETH .
                 Always ensure you are sending tokens to the correct address which is  ${userAddress} and ensure you only send what was claimed.
