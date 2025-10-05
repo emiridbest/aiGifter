@@ -39,7 +39,7 @@ export async function GET(req: NextRequest) {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            background: 'linear-gradient(to right, #9333EA, #4F46E5)',
+            background: 'linear-gradient(to right, #334eeaff, #0c16a3ff)',
             position: 'relative',
           }}
         >
@@ -137,7 +137,7 @@ export async function GET(req: NextRequest) {
               textAlign: 'center',
             }}
           >
-            Try your luck and claim free celoUSD!
+            Try your luck and claim free USDC on base!
           </p>
         </div>
       ),

@@ -101,6 +101,7 @@ export default function SpinningWheel({ onSpin, isSpinning = false }: SpinningWh
                 <div className="mt-4 text-center">
                     <p className="text-sm text-gray-600 dark:text-gray-300">
                         You won <span className="font-bold text-purple-600 dark:text-purple-400">{currentPercentage}%</span> of the faucet balance!
+                        <br/>Now type, Send it, to claim your reward.
                     </p>
                 </div>
             )}
