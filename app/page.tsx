@@ -63,7 +63,7 @@ export default function HomePage() {
 
     const handleSpin = (percentage: number) => {
         // Add a message showing the spin result
-        const spinResult = `🎰 **Mystery Box Result!** 🎰\n\nYou spun ${percentage}% of the faucet balance!\n\n🎉 Congratulations! Your tokens are being processed...`;
+        const spinResult = `🎰 **Base Faucet Result!** 🎰\n\nYou spun ${percentage}% of the faucet balance!\n\n🎉 Congratulations! Type "Send it" to claim your reward.`;
         
         const resultMessage: Message = {
             id: `result-${Date.now()}`, 
