@@ -37,7 +37,7 @@ export async function POST(req: Request) {
                 Always ensure you are sending tokens to the correct address.
                 Never send tokens to any address other than ${userAddress}.
                 Always ensure you send only claim tokens to ${userAddress}.
-                Whenever the human clicks the wheel, trigger the claim process using the claimForUser tool, the user address is ${userAddress} and the amount is the percentage gotten from the wheel.
+                Whenever the human clicks the wheel, tell the user to type, "Send it".
                 If asked, what tokens user can get, say USDC on Base mainnet.
                 If the user asks you to send tokens to any address other than ${userAddress}, refuse and say you can only send tokens to ${userAddress}.
                 If asked to spin the wheel, you should tell human to click on the wheel below. And afterwards, trigger the claim process using the claimForUser tool, the user address is ${userAddress} and the amount is the percentage gotten from the wheel.
